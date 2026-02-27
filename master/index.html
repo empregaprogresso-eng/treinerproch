@@ -1,1 +1,47 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin Master</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<div class="sidebar">
+<h2>Master Admin</h2>
+<button onclick="logout()">Sair</button>
+</div>
+<div class="content">
+<div class="header"><h1>Painel Multi Personal</h1></div>
+<div class="card">
+<h3>Criar Personal</h3>
+<input id="nomePersonal" placeholder="Nome">
+<input id="emailPersonal" placeholder="Email">
+<select id="plano">
+<option value="basico">Básico</option>
+<option value="pro">Pro</option>
+<option value="elite">Elite</option>
+</select>
+<button onclick="criarPersonal()">Criar</button>
+</div>
+</div>
+<script src="../config/firebase.js"></script>
+<script>
+function logout(){auth.signOut().then(()=>window.location="../")}
+function criarPersonal(){
+auth.createUserWithEmailAndPassword(emailPersonal.value,"123456")
+.then(user=>{
+db.collection("users").doc(user.user.uid).set({
+nome:nomePersonal.value,
+role:"personal",
+plano:plano.value
+});
+alert("Personal criado com senha 123456");
+});
+}
+</script>
+</body>
+</html>
