@@ -3,26 +3,27 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Painel Personal</title>
+<title>Dashboard Personal</title>
 <link rel="stylesheet" href="../assets/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <div class="sidebar">
-<h2>CRM Personal</h2>
+<h2>CRM Elite</h2>
 <button onclick="logout()">Sair</button>
 </div>
 <div class="content">
-<h1>Meus Alunos</h1>
+<h1>Dashboard</h1>
 
-<div class="card">
-<input id="nomeAluno" placeholder="Nome">
-<input id="emailAluno" placeholder="Email">
-<button onclick="criarAluno()">Criar</button>
+<div class="grid">
+<div class="card"><div>Total Alunos</div><div class="stat" id="total"></div></div>
+<div class="card"><div>Faturamento</div><div class="stat" id="financeiro">R$0</div></div>
 </div>
 
+<h2>Alunos</h2>
 <div id="lista"></div>
 </div>
 
@@ -31,31 +32,29 @@
 auth.onAuthStateChanged(u=>{
 if(!u)window.location="../";
 window.uid=u.uid;
-db.collection("users").where("personal","==",u.uid)
+
+db.collection("users").where("personal","==",uid)
 .onSnapshot(s=>{
+total.innerText=s.size;
 lista.innerHTML="";
+let totalFinanceiro=0;
 s.forEach(doc=>{
 lista.innerHTML+=`
 <div class="card">
 <b>${doc.data().nome}</b><br>
-<button onclick="abrirAluno('${doc.id}')">Gerenciar</button>
+<button onclick="abrir('${doc.id}')">Gerenciar</button>
 </div>`;
 });
+
+db.collection("financeiro").where("personal","==",uid)
+.onSnapshot(fin=>{
+fin.forEach(f=>totalFinanceiro+=f.data().valor);
+financeiro.innerText="R$"+totalFinanceiro;
+});
 });
 });
 
-function criarAluno(){
-db.collection("users").add({
-nome:nomeAluno.value,
-email:emailAluno.value,
-role:"aluno",
-personal:uid,
-ativo:true
-});
-alert("Aluno criado.");
-}
-
-function abrirAluno(id){
+function abrir(id){
 window.location="aluno.html?id="+id;
 }
 

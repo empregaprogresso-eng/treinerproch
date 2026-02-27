@@ -3,23 +3,24 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Gerenciar Aluno</title>
+<title>Perfil Aluno</title>
 <link rel="stylesheet" href="../assets/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 </head>
 <body>
 <div class="sidebar">
 <a href="index.html">← Voltar</a>
 </div>
 <div class="content">
-<h1>Treino e Dieta</h1>
+<h1>Aluno</h1>
 
 <div class="card">
 <h3>Treino</h3>
 <textarea id="treino"></textarea>
-<input id="video" placeholder="Link do vídeo">
 <button onclick="salvarTreino()">Salvar</button>
 </div>
 
@@ -27,6 +28,22 @@
 <h3>Dieta</h3>
 <textarea id="dieta"></textarea>
 <button onclick="salvarDieta()">Salvar</button>
+</div>
+
+<div class="card">
+<h3>Evolução</h3>
+<canvas id="grafico"></canvas>
+</div>
+
+<div class="card">
+<h3>Fotos</h3>
+<div id="fotos"></div>
+</div>
+
+<div class="card">
+<h3>Financeiro</h3>
+<input id="valor" type="number" placeholder="Valor">
+<button onclick="addPagamento()">Adicionar</button>
 </div>
 
 </div>
@@ -37,18 +54,35 @@ const params=new URLSearchParams(window.location.search);
 const alunoId=params.get("id");
 
 function salvarTreino(){
-db.collection("treinos").doc(alunoId).set({
-texto:treino.value,
-video:video.value
-});
-alert("Treino salvo.");
+db.collection("treinos").doc(alunoId).set({texto:treino.value});
 }
 
 function salvarDieta(){
-db.collection("dietas").doc(alunoId).set({
-texto:dieta.value
+db.collection("dietas").doc(alunoId).set({texto:dieta.value});
+}
+
+db.collection("pesos").where("user","==",alunoId)
+.onSnapshot(s=>{
+const labels=[];const data=[];
+s.forEach(doc=>{labels.push(doc.id.slice(0,5));data.push(doc.data().peso)});
+new Chart(grafico,{type:"line",data:{labels:labels,datasets:[{label:"Peso",data:data}]}});
 });
-alert("Dieta salva.");
+
+storage.ref("progresso/"+alunoId).listAll().then(res=>{
+res.items.forEach(item=>{
+item.getDownloadURL().then(url=>{
+fotos.innerHTML+=`<img src="${url}" class="photo">`;
+});
+});
+});
+
+function addPagamento(){
+db.collection("financeiro").add({
+aluno:alunoId,
+valor:parseFloat(valor.value),
+personal:auth.currentUser.uid
+});
+alert("Pagamento registrado");
 }
 </script>
 </body>
