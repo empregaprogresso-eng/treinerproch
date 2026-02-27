@@ -3,30 +3,22 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>FitSaaS Elite</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#22c55e">
+<title>FitSaaS</title>
+<link rel="stylesheet" href="assets/style.css">
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
-<body style="background:#0b1220;color:white;text-align:center;margin-top:120px;font-family:Arial;">
-<h1>FitSaaS Elite</h1>
-<button onclick="login()" style="padding:12px 20px;background:#22c55e;border:none;border-radius:8px;color:white;">
-Entrar com Google
-</button>
-
+<body style="display:flex;justify-content:center;align-items:center;height:100vh;">
+<div class="card" style="width:320px;text-align:center;">
+<h2>FitSaaS Login</h2>
+<button onclick="login()">Entrar com Google</button>
+</div>
 <script src="config/firebase.js"></script>
 <script>
 function login(){
-const provider = new firebase.auth.GoogleAuthProvider();
-auth.signInWithPopup(provider).then(result=>{
-window.location="app/";
-});
-}
-
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw.js");
+ const provider=new firebase.auth.GoogleAuthProvider();
+ auth.signInWithPopup(provider).then(()=>window.location="admin/");
 }
 </script>
 </body>
