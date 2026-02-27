@@ -5,50 +5,28 @@
 <meta charset="UTF-8">
 <title>Painel Personal</title>
 <link rel="stylesheet" href="../assets/style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <div class="sidebar">
-<h2>Painel</h2>
-<a href="#">Dashboard</a>
-<a href="#">Treinos</a>
-<a href="#">Financeiro</a>
-<button onclick="backup()">Backup</button>
+<h2>Painel Personal</h2>
 <button onclick="logout()">Sair</button>
 </div>
 <div class="content">
-<div class="header">
-<h1>Dashboard</h1>
-<div class="badge" id="planoBadge"></div>
-</div>
-<div class="grid">
-<div class="card"><div>Total Alunos</div><div class="stat" id="totalAlunos">0</div></div>
-<div class="card"><div>Faturamento</div><div class="stat" id="financeiro">R$0</div></div>
-</div>
-<div class="card"><canvas id="grafico"></canvas></div>
+<h1>Bem-vindo</h1>
+<div id="info"></div>
 </div>
 <script src="../config/firebase.js"></script>
 <script>
 auth.onAuthStateChanged(u=>{
 if(!u)window.location="../";
 db.collection("users").doc(u.uid).get().then(doc=>{
-planoBadge.innerText="Plano: "+doc.data().plano;
+info.innerHTML="Plano: <span class='badge'>"+doc.data().plano+"</span>";
 });
 });
 function logout(){auth.signOut().then(()=>window.location="../")}
-function backup(){
-db.collection("alunos").get().then(snapshot=>{
-let data=[];snapshot.forEach(doc=>data.push(doc.data()));
-const blob=new Blob([JSON.stringify(data)],{type:"application/json"});
-const a=document.createElement("a");
-a.href=URL.createObjectURL(blob);
-a.download="backup_alunos.json";
-a.click();
-});
-}
 </script>
 </body>
 </html>
