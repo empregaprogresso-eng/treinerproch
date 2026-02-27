@@ -6,43 +6,60 @@
 <title>App Aluno</title>
 <link rel="stylesheet" href="../assets/style.css">
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 </head>
 <body>
 
 <div class="content">
-  <h1>Área do Aluno</h1>
+<h1>Área do Aluno</h1>
 
-  <div class="card">
-    <h3>Registrar Peso</h3>
-    <input type="number" id="peso">
-    <button onclick="salvarPeso()">Salvar</button>
-  </div>
+<div class="card">
+<h3>Registrar Peso</h3>
+<input id="peso" type="number">
+<button onclick="salvarPeso()">Salvar</button>
+</div>
 
-  <div class="card">
-    <h3>Histórico</h3>
-    <ul id="lista"></ul>
-  </div>
+<div class="card">
+<h3>Upload Foto</h3>
+<input type="file" id="foto">
+<button onclick="uploadFoto()">Enviar</button>
+</div>
+
+<div class="card">
+<h3>Histórico</h3>
+<ul id="lista"></ul>
+</div>
+
 </div>
 
 <script src="../config/firebase.js"></script>
 <script>
+auth.onAuthStateChanged(u=>{if(!u)window.location="../"});
+
 function salvarPeso(){
-  const peso = parseFloat(document.getElementById("peso").value);
-  db.collection("pesos").add({
-    peso:peso,
-    data:new Date()
-  });
+db.collection("pesos").add({
+peso:parseFloat(peso.value),
+user:auth.currentUser.uid,
+data:new Date()
+});
 }
 
-db.collection("pesos").onSnapshot(snapshot=>{
-  const lista = document.getElementById("lista");
-  lista.innerHTML="";
-  snapshot.forEach(doc=>{
-    const li = document.createElement("li");
-    li.innerText = doc.data().peso + " kg";
-    lista.appendChild(li);
-  });
+function uploadFoto(){
+const file=foto.files[0];
+const ref=storage.ref("progresso/"+auth.currentUser.uid+"/"+file.name);
+ref.put(file).then(()=>alert("Foto enviada"));
+}
+
+db.collection("pesos").where("user","==",auth.currentUser?.uid)
+.onSnapshot(s=>{
+lista.innerHTML="";
+s.forEach(doc=>{
+const li=document.createElement("li");
+li.innerText=doc.data().peso+" kg";
+lista.appendChild(li);
+});
 });
 </script>
 
