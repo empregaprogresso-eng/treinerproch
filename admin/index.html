@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Dashboard Personal</title>
+<title>Dashboard</title>
 <link rel="stylesheet" href="../assets/style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -11,54 +11,46 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
+
 <div class="sidebar">
-<h2>CRM Elite</h2>
-<button onclick="logout()">Sair</button>
+<h2>LOGO<br><small>Personal Trainer</small></h2>
+<a>Dashboard</a>
+<a>Alunos</a>
+<a>Treinos</a>
+<a>Dieta</a>
+<a>Progresso</a>
+<a>Finanças</a>
 </div>
+
 <div class="content">
-<h1>Dashboard</h1>
+<div class="topbar">
+<h1>Bem-vindo, Personal</h1>
+<button class="primary">Adicionar Aluno</button>
+</div>
 
 <div class="grid">
-<div class="card"><div>Total Alunos</div><div class="stat" id="total"></div></div>
-<div class="card"><div>Faturamento</div><div class="stat" id="financeiro">R$0</div></div>
+<div class="card"><div>Alunos</div><div class="stat">24</div></div>
+<div class="card"><div>Treinos Ativos</div><div class="stat">15</div></div>
+<div class="card"><div>Dietas Ativas</div><div class="stat">12</div></div>
+<div class="card"><div>Mensagens</div><div class="stat">5</div></div>
 </div>
 
-<h2>Alunos</h2>
-<div id="lista"></div>
-</div>
-
-<script src="../config/firebase.js"></script>
-<script>
-auth.onAuthStateChanged(u=>{
-if(!u)window.location="../";
-window.uid=u.uid;
-
-db.collection("users").where("personal","==",uid)
-.onSnapshot(s=>{
-total.innerText=s.size;
-lista.innerHTML="";
-let totalFinanceiro=0;
-s.forEach(doc=>{
-lista.innerHTML+=`
 <div class="card">
-<b>${doc.data().nome}</b><br>
-<button onclick="abrir('${doc.id}')">Gerenciar</button>
-</div>`;
-});
+<h3>Evolução</h3>
+<canvas id="chart"></canvas>
+</div>
 
-db.collection("financeiro").where("personal","==",uid)
-.onSnapshot(fin=>{
-fin.forEach(f=>totalFinanceiro+=f.data().valor);
-financeiro.innerText="R$"+totalFinanceiro;
-});
-});
-});
+</div>
 
-function abrir(id){
-window.location="aluno.html?id="+id;
+<script>
+new Chart(document.getElementById("chart"),{
+type:"line",
+data:{
+labels:["Seg","Ter","Qua","Qui","Sex","Sab","Dom"],
+datasets:[{label:"Evolução",data:[78,77,76,75,74,73,72],borderColor:"#f59e0b"}]
 }
-
-function logout(){auth.signOut().then(()=>window.location="../")}
+});
 </script>
+
 </body>
 </html>
