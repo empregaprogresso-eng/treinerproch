@@ -5,53 +5,32 @@
 <meta charset="UTF-8">
 <title>App Aluno</title>
 <link rel="stylesheet" href="../assets/style.css">
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-<div class="content">
-<h1>Meu Painel</h1>
+<div class="mobile-container">
+<h2>LOGO<br><small>Personal Trainer</small></h2>
+<h3>Bem-vindo, Aluno!</h3>
 
-<div class="card">
-<h3>Treino</h3>
-<div id="treino"></div>
+<div class="mobile-card">
+<div class="mobile-stats">
+<div class="mobile-stat"><b>24</b><br>Treinos</div>
+<div class="mobile-stat"><b>1800</b><br>Calorias</div>
+<div class="mobile-stat"><b>4/5</b><br>Progresso</div>
+</div>
 </div>
 
-<div class="card">
-<h3>Dieta</h3>
-<div id="dieta"></div>
+<div class="mobile-card">
+<h4>Próximo treino</h4>
+<p><b>Peito e Bíceps</b></p>
+<p>Supino reto • Rosca direta</p>
 </div>
 
-<div class="card">
-<h3>Registrar Peso</h3>
-<input id="peso" type="number">
-<button onclick="salvarPeso()">Salvar</button>
+<div class="mobile-card">
+<button>Treino</button>
+<button>Dieta</button>
+<button>Progresso</button>
 </div>
 
-<button onclick="logout()">Sair</button>
 </div>
-
-<script src="../config/firebase.js"></script>
-<script>
-auth.onAuthStateChanged(u=>{
-if(!u)window.location="../";
-window.uid=u.uid;
-
-db.collection("treinos").doc(uid).onSnapshot(doc=>{
-if(doc.exists){treino.innerHTML=doc.data().texto}
-});
-
-db.collection("dietas").doc(uid).onSnapshot(doc=>{
-if(doc.exists){dieta.innerHTML=doc.data().texto}
-});
-});
-
-function salvarPeso(){
-db.collection("pesos").add({peso:parseFloat(peso.value),user:uid});
-}
-
-function logout(){auth.signOut().then(()=>window.location="../")}
-</script>
 </body>
 </html>
