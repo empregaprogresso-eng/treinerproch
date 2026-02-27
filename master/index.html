@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Admin Master</title>
+<title>Master</title>
 <link rel="stylesheet" href="../assets/style.css">
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
@@ -11,36 +11,62 @@
 </head>
 <body>
 <div class="sidebar">
-<h2>Master Admin</h2>
+<h2>Admin Master</h2>
 <button onclick="logout()">Sair</button>
 </div>
 <div class="content">
-<div class="header"><h1>Painel Multi Personal</h1></div>
+<h1>Gerenciar Personais</h1>
+
 <div class="card">
-<h3>Criar Personal</h3>
-<input id="nomePersonal" placeholder="Nome">
-<input id="emailPersonal" placeholder="Email">
+<input id="nome" placeholder="Nome Personal">
+<input id="emailPersonal" placeholder="Email Personal">
 <select id="plano">
 <option value="basico">Básico</option>
 <option value="pro">Pro</option>
 <option value="elite">Elite</option>
 </select>
-<button onclick="criarPersonal()">Criar</button>
+<button onclick="criarPersonal()">Criar Personal</button>
 </div>
+
+<div class="card">
+<h3>Lista</h3>
+<div id="lista"></div>
 </div>
+
+</div>
+
 <script src="../config/firebase.js"></script>
 <script>
+auth.onAuthStateChanged(u=>{if(!u)window.location="../";});
+
 function logout(){auth.signOut().then(()=>window.location="../")}
+
 function criarPersonal(){
-auth.createUserWithEmailAndPassword(emailPersonal.value,"123456")
-.then(user=>{
-db.collection("users").doc(user.user.uid).set({
-nome:nomePersonal.value,
+db.collection("users").add({
+nome:nome.value,
+email:emailPersonal.value,
 role:"personal",
-plano:plano.value
+plano:plano.value,
+ativo:true
 });
-alert("Personal criado com senha 123456");
+alert("Personal criado. Ele precisa fazer login com Google.");
+}
+
+db.collection("users").where("role","==","personal")
+.onSnapshot(snapshot=>{
+lista.innerHTML="";
+snapshot.forEach(doc=>{
+const d=doc.data();
+lista.innerHTML+=`
+<div class="card">
+${d.nome} - <span class="badge">${d.plano}</span> - ${d.ativo?"Ativo":"Bloqueado"}
+<button onclick="toggle('${doc.id}',${d.ativo})">${d.ativo?"Bloquear":"Ativar"}</button>
+</div>`;
 });
+});
+
+function toggle(id,status){
+db.collection("users").doc(id).update({ativo:!status});
 }
 </script>
 </body>
