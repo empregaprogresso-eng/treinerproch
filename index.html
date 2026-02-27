@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Login</title>
+<title>FitSaaS Elite</title>
 <link rel="stylesheet" href="assets/style.css">
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
@@ -33,7 +33,6 @@ ativo:true
 window.location="app/";
 }else{
 const d=doc.data();
-if(!d.ativo){alert("Conta desativada");auth.signOut();return;}
 if(d.role==="personal")window.location="admin/";
 if(d.role==="aluno")window.location="app/";
 }
