@@ -1,1 +1,63 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Painel Admin</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>Painel</h2>
+  <p><a href="../app/" style="color:white;">Ver App Aluno</a></p>
+  <button onclick="logout()">Sair</button>
+</div>
+
+<div class="content">
+  <h1>Dashboard</h1>
+
+  <div class="card">
+    <h3>Cadastrar Aluno</h3>
+    <input type="text" id="nomeAluno" placeholder="Nome">
+    <button onclick="salvarAluno()">Salvar</button>
+  </div>
+
+  <div class="card">
+    <h3>Lista de Alunos</h3>
+    <ul id="lista"></ul>
+  </div>
+</div>
+
+<script src="../config/firebase.js"></script>
+<script>
+auth.onAuthStateChanged(user=>{
+  if(!user) window.location.href="../";
+});
+
+function logout(){
+  auth.signOut().then(()=>window.location.href="../");
+}
+
+function salvarAluno(){
+  const nome = document.getElementById("nomeAluno").value;
+  db.collection("alunos").add({nome})
+  .then(()=> alert("Aluno salvo"));
+}
+
+db.collection("alunos").onSnapshot(snapshot=>{
+  const lista = document.getElementById("lista");
+  lista.innerHTML="";
+  snapshot.forEach(doc=>{
+    const li = document.createElement("li");
+    li.innerText = doc.data().nome;
+    lista.appendChild(li);
+  });
+});
+</script>
+
+</body>
+</html>
