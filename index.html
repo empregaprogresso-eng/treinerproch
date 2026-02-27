@@ -3,19 +3,21 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Login</title>
+<title>FitSaaS Login</title>
+<link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="assets/style.css">
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
 </head>
 <body>
-<div style="max-width:400px;margin:120px auto;">
+<div style="max-width:420px;margin:120px auto;">
 <div class="card">
 <h2>Login</h2>
-<input type="email" id="email" placeholder="Email">
-<input type="password" id="senha" placeholder="Senha">
+<input id="email" placeholder="Email">
+<input id="senha" type="password" placeholder="Senha">
 <button onclick="login()">Entrar</button>
 </div>
 </div>
@@ -25,12 +27,14 @@ function login(){
 auth.signInWithEmailAndPassword(email.value,senha.value)
 .then(user=>{
 db.collection("users").doc(user.user.uid).get().then(doc=>{
-if(doc.data().role==="personal"){window.location="admin/";}
-else{window.location="app/";}
+const role=doc.data().role;
+if(role==="master"){window.location="master/"}
+if(role==="personal"){window.location="admin/"}
+if(role==="aluno"){window.location="app/"}
 });
-})
-.catch(err=>alert(err.message));
+});
 }
+if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js");}
 </script>
 </body>
 </html>
