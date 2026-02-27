@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Login - Fitness SaaS</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<div style="max-width:400px;margin:100px auto;">
+  <div class="card">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="senha" placeholder="Senha">
+    <button onclick="login()">Entrar</button>
+  </div>
+</div>
+
+<script src="config/firebase.js"></script>
+<script>
+function login(){
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("senha").value;
+  auth.signInWithEmailAndPassword(email, senha)
+    .then(()=> window.location.href="admin/")
+    .catch(err=> alert(err.message));
+}
+</script>
+
+</body>
+</html>
