@@ -9,81 +9,68 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 </head>
 <body>
 
 <div class="sidebar">
-  <h2>Dashboard</h2>
-  <a href="#">Alunos</a>
-  <a href="#">Treinos</a>
-  <a href="#">Dieta</a>
-  <a href="#">Progresso</a>
-  <button onclick="logout()">Sair</button>
+<h2>Painel SaaS</h2>
+<button onclick="logout()">Sair</button>
 </div>
 
 <div class="content">
-  <h1>Painel Geral</h1>
+<h1>Dashboard</h1>
 
-  <div class="grid">
-    <div class="card"><h3>Total Alunos</h3><p id="totalAlunos">0</p></div>
-    <div class="card"><h3>Pesos Registrados</h3><p id="totalPesos">0</p></div>
-  </div>
+<div class="grid">
+<div class="card"><div>Total Alunos</div><div class="stat" id="totalAlunos">0</div></div>
+<div class="card"><div>Faturamento</div><div class="stat" id="financeiro">R$0</div></div>
+</div>
 
-  <div class="card">
-    <h3>Evolução de Peso</h3>
-    <canvas id="grafico"></canvas>
-  </div>
+<div class="card">
+<h3>Cadastrar Aluno</h3>
+<input id="nomeAluno" placeholder="Nome">
+<input id="emailAluno" placeholder="Email">
+<button onclick="criarAluno()">Criar</button>
+</div>
 
-  <div class="card">
-    <h3>Novo Aluno</h3>
-    <input type="text" id="nomeAluno" placeholder="Nome">
-    <button onclick="addAluno()">Salvar</button>
-  </div>
+<div class="card">
+<h3>Evolução Geral</h3>
+<canvas id="grafico"></canvas>
+</div>
+
 </div>
 
 <script src="../config/firebase.js"></script>
 <script>
-auth.onAuthStateChanged(user=>{
-  if(!user) window.location.href="../";
+auth.onAuthStateChanged(u=>{if(!u)window.location="../"});
+
+function logout(){auth.signOut().then(()=>window.location="../")}
+
+function criarAluno(){
+auth.createUserWithEmailAndPassword(emailAluno.value,"123456")
+.then(user=>{
+db.collection("users").doc(user.user.uid).set({
+nome:nomeAluno.value,
+role:"aluno",
+personal:auth.currentUser.uid
 });
-
-function logout(){
-  auth.signOut().then(()=>window.location.href="../");
+alert("Aluno criado com senha 123456");
+});
 }
 
-function addAluno(){
-  const nome = document.getElementById("nomeAluno").value;
-  db.collection("alunos").add({
-    nome:nome,
-    personal:auth.currentUser.uid
-  });
-}
+db.collection("users").where("personal","==",auth.currentUser?.uid)
+.onSnapshot(s=>{totalAlunos.innerText=s.size});
 
-db.collection("alunos").onSnapshot(snapshot=>{
-  document.getElementById("totalAlunos").innerText = snapshot.size;
+db.collection("financeiro").where("personal","==",auth.currentUser?.uid)
+.onSnapshot(s=>{
+let total=0;s.forEach(doc=>total+=doc.data().valor);
+financeiro.innerText="R$"+total;
 });
 
 db.collection("pesos").onSnapshot(snapshot=>{
-  document.getElementById("totalPesos").innerText = snapshot.size;
-
-  const labels = [];
-  const data = [];
-
-  snapshot.forEach(doc=>{
-    labels.push(doc.id.substring(0,5));
-    data.push(doc.data().peso);
-  });
-
-  new Chart(document.getElementById("grafico"),{
-    type:"line",
-    data:{
-      labels:labels,
-      datasets:[{
-        label:"Peso",
-        data:data
-      }]
-    }
-  });
+const labels=[];const data=[];
+snapshot.forEach(doc=>{labels.push(doc.id.slice(0,5));data.push(doc.data().peso)});
+new Chart(grafico,{type:"line",data:{labels:labels,datasets:[{label:"Peso",data:data}]}});
 });
 </script>
 
