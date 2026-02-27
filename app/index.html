@@ -8,37 +8,17 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 </head>
 <body>
 <div class="content">
-<div class="header">
-<h1>Meu Progresso</h1>
+<h1>Área do Aluno</h1>
+<p>Seu progresso aparecerá aqui.</p>
 <button onclick="logout()">Sair</button>
-</div>
-<div class="card">
-<h3>Registrar Peso</h3>
-<input id="peso" type="number">
-<button onclick="salvarPeso()">Salvar</button>
-</div>
-<div class="card">
-<h3>Upload Foto</h3>
-<input type="file" id="foto">
-<button onclick="uploadFoto()">Enviar</button>
-</div>
 </div>
 <script src="../config/firebase.js"></script>
 <script>
 auth.onAuthStateChanged(u=>{if(!u)window.location="../"});
 function logout(){auth.signOut().then(()=>window.location="../")}
-function salvarPeso(){
-db.collection("pesos").add({peso:parseFloat(peso.value),user:auth.currentUser.uid});
-}
-function uploadFoto(){
-const file=foto.files[0];
-const ref=storage.ref("progresso/"+auth.currentUser.uid+"/"+file.name);
-ref.put(file).then(()=>alert("Foto enviada"));
-}
 </script>
 </body>
 </html>
