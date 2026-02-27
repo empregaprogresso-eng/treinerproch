@@ -5,27 +5,52 @@
 <meta charset="UTF-8">
 <title>Painel Personal</title>
 <link rel="stylesheet" href="../assets/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-<div class="sidebar">
-<h2>Painel Personal</h2>
-<button onclick="logout()">Sair</button>
-</div>
+<div class="sidebar"><h2>Painel</h2><button onclick="logout()">Sair</button></div>
 <div class="content">
-<h1>Bem-vindo</h1>
-<div id="info"></div>
+<h1>Dashboard</h1>
+
+<div class="card">
+<h3>Cadastrar Aluno</h3>
+<input id="nomeAluno" placeholder="Nome">
+<input id="emailAluno" placeholder="Email">
+<button onclick="criarAluno()">Criar</button>
+</div>
+
+<div class="card">
+<h3>Meus Alunos</h3>
+<div id="lista"></div>
+</div>
+
 </div>
 <script src="../config/firebase.js"></script>
 <script>
 auth.onAuthStateChanged(u=>{
 if(!u)window.location="../";
-db.collection("users").doc(u.uid).get().then(doc=>{
-info.innerHTML="Plano: <span class='badge'>"+doc.data().plano+"</span>";
+window.uid=u.uid;
+db.collection("users").where("personal","==",u.uid)
+.onSnapshot(s=>{
+lista.innerHTML="";
+s.forEach(doc=>{lista.innerHTML+=`<div class="mobile-card">${doc.data().nome}</div>`});
 });
 });
+
+function criarAluno(){
+db.collection("users").add({
+nome:nomeAluno.value,
+email:emailAluno.value,
+role:"aluno",
+personal:uid,
+ativo:true
+});
+alert("Aluno criado. Ele deve logar com Google.");
+}
+
 function logout(){auth.signOut().then(()=>window.location="../")}
 </script>
 </body>
