@@ -3,13 +3,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="manifest" href="manifest.json">
 <title>Login</title>
 <link rel="stylesheet" href="assets/style.css">
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 </head>
 <body>
 <div style="max-width:400px;margin:120px auto;">
@@ -18,7 +16,6 @@
 <button onclick="login()">Entrar com Google</button>
 </div>
 </div>
-
 <script src="config/firebase.js"></script>
 <script>
 function login(){
@@ -37,14 +34,12 @@ window.location="app/";
 }else{
 const d=doc.data();
 if(!d.ativo){alert("Conta desativada");auth.signOut();return;}
-if(d.role==="master")window.location="master/";
 if(d.role==="personal")window.location="admin/";
 if(d.role==="aluno")window.location="app/";
 }
 });
 });
 }
-if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js");}
 </script>
 </body>
 </html>
