@@ -1,1 +1,48 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>App do Aluno</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<div class="content">
+  <h1>App do Aluno</h1>
+
+  <div class="card">
+    <h3>Registrar Peso</h3>
+    <input type="number" id="peso">
+    <button onclick="salvarPeso()">Salvar</button>
+  </div>
+
+  <div class="card">
+    <h3>Histórico</h3>
+    <ul id="historico"></ul>
+  </div>
+</div>
+
+<script src="../config/firebase.js"></script>
+<script>
+function salvarPeso(){
+  const peso = document.getElementById("peso").value;
+  db.collection("pesos").add({peso})
+    .then(()=>alert("Peso salvo"));
+}
+
+db.collection("pesos").onSnapshot(snapshot=>{
+  const lista = document.getElementById("historico");
+  lista.innerHTML="";
+  snapshot.forEach(doc=>{
+    const li = document.createElement("li");
+    li.innerText = doc.data().peso + " kg";
+    lista.appendChild(li);
+  });
+});
+</script>
+
+</body>
+</html>
