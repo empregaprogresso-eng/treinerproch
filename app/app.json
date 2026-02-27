@@ -1,0 +1,9 @@
+
+{
+  "expo": {
+    "name": "Personal Trainer App",
+    "slug": "personal-trainer-app",
+    "version": "1.0.0",
+    "orientation": "portrait"
+  }
+}
