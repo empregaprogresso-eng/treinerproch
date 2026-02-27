@@ -4,40 +4,29 @@
 <head>
 <meta charset="UTF-8">
 <title>FitSaaS Elite</title>
-<link rel="stylesheet" href="assets/style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#22c55e">
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
-<body>
-<div style="max-width:400px;margin:120px auto;">
-<div class="card">
-<h2>Entrar</h2>
-<button onclick="login()">Entrar com Google</button>
-</div>
-</div>
+<body style="background:#0b1220;color:white;text-align:center;margin-top:120px;font-family:Arial;">
+<h1>FitSaaS Elite</h1>
+<button onclick="login()" style="padding:12px 20px;background:#22c55e;border:none;border-radius:8px;color:white;">
+Entrar com Google
+</button>
+
 <script src="config/firebase.js"></script>
 <script>
 function login(){
-const provider=new firebase.auth.GoogleAuthProvider();
+const provider = new firebase.auth.GoogleAuthProvider();
 auth.signInWithPopup(provider).then(result=>{
-const user=result.user;
-db.collection("users").doc(user.uid).get().then(doc=>{
-if(!doc.exists){
-db.collection("users").doc(user.uid).set({
-nome:user.displayName,
-email:user.email,
-role:"aluno",
-ativo:true
-});
 window.location="app/";
-}else{
-const d=doc.data();
-if(d.role==="personal")window.location="admin/";
-if(d.role==="aluno")window.location="app/";
+});
 }
-});
-});
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js");
 }
 </script>
 </body>

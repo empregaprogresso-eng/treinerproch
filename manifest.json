@@ -1,9 +1,21 @@
 
 {
-  "name": "FitSaaS",
+  "name": "FitSaaS Elite",
   "short_name": "FitSaaS",
-  "start_url": "/",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0b1220",
-  "theme_color": "#22c55e"
+  "theme_color": "#22c55e",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
