@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Gerenciar Aluno</title>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<div class="sidebar">
+<a href="index.html">← Voltar</a>
+</div>
+<div class="content">
+<h1>Treino e Dieta</h1>
+
+<div class="card">
+<h3>Treino</h3>
+<textarea id="treino"></textarea>
+<input id="video" placeholder="Link do vídeo">
+<button onclick="salvarTreino()">Salvar</button>
+</div>
+
+<div class="card">
+<h3>Dieta</h3>
+<textarea id="dieta"></textarea>
+<button onclick="salvarDieta()">Salvar</button>
+</div>
+
+</div>
+
+<script src="../config/firebase.js"></script>
+<script>
+const params=new URLSearchParams(window.location.search);
+const alunoId=params.get("id");
+
+function salvarTreino(){
+db.collection("treinos").doc(alunoId).set({
+texto:treino.value,
+video:video.value
+});
+alert("Treino salvo.");
+}
+
+function salvarDieta(){
+db.collection("dietas").doc(alunoId).set({
+texto:dieta.value
+});
+alert("Dieta salva.");
+}
+</script>
+</body>
+</html>
