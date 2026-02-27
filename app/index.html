@@ -5,7 +5,6 @@
 <meta charset="UTF-8">
 <title>App Aluno</title>
 <link rel="stylesheet" href="../assets/style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -16,29 +15,19 @@
 <h1>Meu Painel</h1>
 
 <div class="mobile-card">
+<h3>Meu Treino</h3>
+<div id="treino"></div>
+</div>
+
+<div class="mobile-card">
+<h3>Minha Dieta</h3>
+<div id="dieta"></div>
+</div>
+
+<div class="mobile-card">
 <h3>Registrar Peso</h3>
 <input id="peso" type="number">
 <button onclick="salvarPeso()">Salvar</button>
-</div>
-
-<div class="mobile-card">
-<h3>Gráfico de Evolução</h3>
-<canvas id="grafico"></canvas>
-</div>
-
-<div class="mobile-card">
-<h3>Treino</h3>
-<textarea id="treino" placeholder="Descrição do treino"></textarea>
-<input id="video" placeholder="Link do vídeo">
-<button onclick="salvarTreino()">Salvar</button>
-<div id="treinoAtual"></div>
-</div>
-
-<div class="mobile-card">
-<h3>Dieta</h3>
-<textarea id="dieta" placeholder="Plano alimentar"></textarea>
-<button onclick="salvarDieta()">Salvar</button>
-<div id="dietaAtual"></div>
 </div>
 
 <div class="mobile-card">
@@ -56,24 +45,17 @@ auth.onAuthStateChanged(u=>{
 if(!u)window.location="../";
 window.uid=u.uid;
 
-db.collection("pesos").where("user","==",uid)
-.onSnapshot(s=>{
-const labels=[];const data=[];
-s.forEach(doc=>{labels.push(doc.id.slice(0,5));data.push(doc.data().peso)});
-new Chart(grafico,{type:"line",data:{labels:labels,datasets:[{label:"Peso",data:data}]}});
+db.collection("treinos").doc(uid).onSnapshot(doc=>{
+if(doc.exists){treino.innerHTML=doc.data().texto}
+});
+
+db.collection("dietas").doc(uid).onSnapshot(doc=>{
+if(doc.exists){dieta.innerHTML=doc.data().texto}
 });
 });
 
 function salvarPeso(){
 db.collection("pesos").add({peso:parseFloat(peso.value),user:uid});
-}
-
-function salvarTreino(){
-db.collection("treinos").doc(uid).set({texto:treino.value,video:video.value});
-}
-
-function salvarDieta(){
-db.collection("dietas").doc(uid).set({texto:dieta.value});
 }
 
 function upload(){
