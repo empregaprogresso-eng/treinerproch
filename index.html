@@ -8,28 +8,29 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 </head>
 <body>
-
 <div style="max-width:400px;margin:120px auto;">
-  <div class="card">
-    <h2>Login Personal</h2>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="senha" placeholder="Senha">
-    <button onclick="login()">Entrar</button>
-  </div>
+<div class="card">
+<h2>Login</h2>
+<input type="email" id="email" placeholder="Email">
+<input type="password" id="senha" placeholder="Senha">
+<button onclick="login()">Entrar</button>
 </div>
-
+</div>
 <script src="config/firebase.js"></script>
 <script>
 function login(){
-  const email = document.getElementById("email").value;
-  const senha = document.getElementById("senha").value;
-  auth.signInWithEmailAndPassword(email, senha)
-  .then(()=> window.location.href="admin/")
-  .catch(err=> alert(err.message));
+auth.signInWithEmailAndPassword(email.value,senha.value)
+.then(user=>{
+db.collection("users").doc(user.user.uid).get().then(doc=>{
+if(doc.data().role==="personal"){window.location="admin/";}
+else{window.location="app/";}
+});
+})
+.catch(err=>alert(err.message));
 }
 </script>
-
 </body>
 </html>
